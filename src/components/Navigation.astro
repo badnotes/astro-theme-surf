@@ -1,0 +1,59 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+
+interface NavLink {
+  href: string;
+  text: string;
+}
+
+const navLinks: NavLink[] = [
+  { href: '/categories', text: 'Categories' },
+  { href: '/tags', text: 'Tags' },
+  { href: '/about', text: 'About' }
+];
+
+const currentPath = Astro.url.pathname;
+
+function isActive(href: string) {
+  if (href === '/') {
+    return currentPath === '/';
+  }
+  return currentPath.startsWith(href);
+}
+---
+
+<nav class="bg-white dark:bg-gray-800 shadow-sm">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between h-16">
+      <div class="flex space-x-8">
+        <a 
+          href="/" 
+          class:list={[
+            "flex items-center text-xl font-bold",
+            isActive('/') 
+              ? "text-blue-600 dark:text-blue-400" 
+              : "text-gray-800 dark:text-white hover:text-gray-900 dark:hover:text-white"
+          ]}
+        >
+          My Blog
+        </a>
+        {navLinks.map(link => (
+          <a
+            href={link.href}
+            class:list={[
+              "flex items-center relative",
+              isActive(link.href)
+                ? "text-blue-600 dark:text-blue-400 after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue-600 dark:after:bg-blue-400"
+                : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+            ]}
+          >
+            {link.text}
+          </a>
+        ))}
+      </div>
+      <div class="flex items-center">
+        <ThemeToggle />
+      </div>
+    </div>
+  </div>
+</nav>

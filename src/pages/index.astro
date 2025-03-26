@@ -1,0 +1,33 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PostCard from '../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('posts', ({ data }) => {
+  return import.meta.env.PROD ? !data.draft : true;
+});
+
+// 按日期排序，最新的在前面
+const sortedPosts = posts.sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+---
+
+<Layout title="My Blog">
+  <div class="max-w-6xl mx-auto">
+    <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-8">Latest Posts</h1>
+    
+    <div class="grid grid-cols-1 gap-8">
+      {sortedPosts.map(post => (
+        <PostCard
+          url={`/${post.slug}`}
+          title={post.data.title}
+          date={post.data.date}
+          description={post.data.description}
+          categories={post.data.categories}
+          tags={post.data.tags}
+        />
+      ))}
+    </div>
+  </div>
+</Layout>

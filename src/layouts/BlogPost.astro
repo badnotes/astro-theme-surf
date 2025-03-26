@@ -1,0 +1,88 @@
+---
+import Layout from './Layout.astro';
+import CopyButton from '../components/CopyButton.astro';
+
+interface Props {
+  frontmatter: {
+    title: string;
+    date: string;
+    description?: string;
+    tags?: string[];
+    categories?: string[];
+    image?: string;
+    author?: string;
+  };
+}
+
+const { frontmatter } = Astro.props;
+
+function formatDate(date: string) {
+  return new Date(date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+
+// 从标签和分类中提取关键词
+const keywords = [...(frontmatter.tags || []), ...(frontmatter.categories || [])];
+---
+
+<Layout 
+  title={frontmatter.title}
+  description={frontmatter.description}
+  image={frontmatter.image}
+  type="article"
+  publishDate={frontmatter.date}
+  author={frontmatter.author}
+  keywords={keywords}
+>
+  
+  <article class="mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+    <div class="md:w-screen w-full"></div>
+    <header class="px-8 py-8 border-b-2 border-gray-300 dark:border-gray-700">
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+        {frontmatter.title}
+      </h1>
+      <div class="flex flex-wrap items-center gap-4">
+        <time class="text-gray-500 dark:text-gray-400">
+          {formatDate(frontmatter.date)}
+        </time>
+        {frontmatter.categories && (
+          <div class="flex flex-wrap gap-2">
+            {frontmatter.categories.map(category => (
+              <a
+                href={`/categories#${category}`}
+                class="text-sm px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+              >
+                {category}
+              </a>
+            ))}
+          </div>
+        )}
+        {frontmatter.tags && (
+          <div class="flex flex-wrap gap-2">
+            {frontmatter.tags.map(tag => (
+              <a
+                href={`/tags#${tag}`}
+                class="text-sm px-3 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 rounded-full hover:bg-blue-100 dark:hover:bg-blue-800/30 transition-colors"
+              >
+                #{tag}
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+      <!-- {frontmatter.description && (
+        <p class="mt-4 text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
+          {frontmatter.description}
+        </p>
+      )} -->
+    </header>
+
+    <div class="prose prose-lg dark:prose-invert prose-pre:max-w-none p-8">
+      <slot />
+    </div>
+  </article>
+  <CopyButton />
+</Layout>

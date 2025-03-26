@@ -1,0 +1,52 @@
+---
+---
+
+<script>
+  function addCopyButtons() {
+    const codeBlocks = document.querySelectorAll('pre');
+    codeBlocks.forEach(pre => {
+      if (!pre.querySelector('[data-copy-button]')) {
+        const button = document.createElement('button');
+        button.className = 'copy-button absolute right-2 top-2 p-1 bg-gray-800/70 rounded text-gray-400 hover:text-white hover:bg-gray-700 transition-colors';
+        button.setAttribute('aria-label', 'Copy code');
+        button.setAttribute('data-copy-button', '');
+        button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 copy-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 check-icon hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>`;
+        
+        button.addEventListener('click', async () => {
+          const code = pre.querySelector('code')?.textContent || '';
+          try {
+            await navigator.clipboard.writeText(code);
+            
+            // Show success state
+            const copyIcon = button.querySelector('.copy-icon');
+            const checkIcon = button.querySelector('.check-icon');
+            if (copyIcon && checkIcon) {
+              copyIcon.classList.add('hidden');
+              checkIcon.classList.remove('hidden');
+              
+              // Reset after 2 seconds
+              setTimeout(() => {
+                copyIcon.classList.remove('hidden');
+                checkIcon.classList.add('hidden');
+              }, 2000);
+            }
+          } catch (err) {
+            console.error('Failed to copy code:', err);
+          }
+        });
+
+        pre.appendChild(button);
+      }
+    });
+  }
+
+  // Setup on initial load
+  addCopyButtons();
+
+  // Setup on client-side navigation (if using View Transitions)
+  document.addEventListener('astro:page-load', addCopyButtons);
+</script>

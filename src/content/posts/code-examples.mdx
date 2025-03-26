@@ -1,0 +1,259 @@
+---
+title: Code Examples with Syntax Highlighting
+date: 2025-03-26
+author: Your Name
+description: A showcase of syntax highlighting in different programming languages
+categories: ["Tutorial"]
+tags: ["code", "syntax-highlighting", "examples"]
+---
+
+
+This post demonstrates syntax highlighting for various programming languages using Shiki with the GitHub Dark theme.
+
+## JavaScript Example
+
+Here's a simple React component:
+
+```javascript
+function greet(name) {
+  console.log(`Hello, ${name}!`);
+}
+
+// Object example
+const user = {
+  name: 'John',
+  age: 30,
+  hobbies: ['reading', 'music', 'coding']
+};
+
+// Array methods
+const numbers = [1, 2, 3, 4, 5];
+const doubled = numbers.map(n => n * 2);
+```
+
+## Python Example
+
+Here's a Python class example:
+
+```python
+def fibonacci(n):
+    """Generate Fibonacci sequence up to n"""
+    a, b = 0, 1
+    while a < n:
+        yield a
+        a, b = b, a + b
+
+# Using the generator
+for num in fibonacci(100):
+    print(num)
+```
+
+## TypeScript Example
+
+Here's a TypeScript interface and implementation:
+
+```typescript
+interface Post {
+  id: string;
+  title: string;
+  content: string;
+  tags: string[];
+  published: boolean;
+}
+
+class BlogService {
+  private posts: Map<string, Post> = new Map();
+
+  public addPost(post: Omit<Post, 'id'>): Post {
+    const id = crypto.randomUUID();
+    const newPost: Post = { ...post, id };
+    this.posts.set(id, newPost);
+    return newPost;
+  }
+
+  public getPost(id: string): Post | undefined {
+    return this.posts.get(id);
+  }
+
+  public listPosts(tag?: string): Post[] {
+    const allPosts = Array.from(this.posts.values());
+    return tag
+      ? allPosts.filter(post => post.tags.includes(tag))
+      : allPosts;
+  }
+}
+```
+
+## CSS Example
+
+Here's some Tailwind-style CSS:
+
+```css
+.blog-card {
+  @apply bg-white rounded-lg shadow-md p-6;
+  @apply transform transition-transform duration-200;
+}
+
+.blog-card:hover {
+  @apply shadow-lg -translate-y-1;
+}
+
+.blog-title {
+  @apply text-2xl font-bold text-gray-900;
+  @apply mb-2 hover:text-blue-600;
+}
+
+.blog-tags {
+  @apply flex gap-2 mt-4;
+}
+
+.blog-tag {
+  @apply px-2 py-1 text-sm;
+  @apply bg-blue-50 text-blue-600 rounded-full;
+  @apply hover:bg-blue-100 transition-colors;
+}
+```
+
+## Shell Script Example
+
+Here's a shell script for setting up a new blog:
+
+```bash
+#!/bin/bash
+
+# Create a new blog post
+create_post() {
+  local title="$1"
+  local date=$(date +%Y-%m-%d)
+  local filename="${date}-${title// /-}.md"
+  
+  cat > "posts/$filename" << EOF
+---
+title: ${title}
+date: ${date}
+tags: []
+---
+
+Write your content here...
+EOF
+
+  echo "Created new post: posts/$filename"
+}
+
+# Usage
+create_post "My New Blog Post"
+```
+
+## Using Code Blocks in MDX
+
+The syntax highlighting is automatically applied when you wrap your code in triple backticks followed by the language name. For example:
+
+    ```python
+    def hello_world():
+        print("Hello, World!")
+    ```
+
+Supported languages include:
+- JavaScript/TypeScript
+- Python
+- Ruby
+- Go
+- Rust
+- HTML/CSS
+- Shell scripts
+- And many more!
+
+Remember to specify the language after the triple backticks to get proper syntax highlighting.
+
+## Inline Code
+
+You can use `inline code` within paragraphs. For example, use `const` instead of `var` in modern JavaScript.
+
+## Command Line Examples
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+```
+
+## Tables
+
+| Language   | Type    | Popular Frameworks |
+|------------|---------|-------------------|
+| JavaScript | Dynamic | React, Vue, Angular|
+| Python     | Dynamic | Django, Flask     |
+| Rust       | Static  | Actix, Rocket    |
+
+## Lists with Code
+
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+2. Create configuration:
+   ```javascript
+   module.exports = {
+     // your config here
+   }
+   ```
+
+3. Run the application:
+   ```bash
+   npm start
+   ```
+
+## Blockquotes
+
+> Code is like humor. When you have to explain it, it's bad.
+> 
+> — Cory House
+
+## Mixed Content
+
+Here's an example combining different elements:
+
+1. First, import the module:
+   ```javascript
+   import { useState } from 'react';
+   ```
+
+2. Create a component:
+   ```javascript
+   function Counter() {
+     const [count, setCount] = useState(0);
+     return (
+       <button onClick={() => setCount(count + 1)}>
+         Count: {count}
+       </button>
+     );
+   }
+   ```
+
+3. Use it in your app:
+   ```javascript
+   function App() {
+     return (
+       <div>
+         <h1>Counter Example</h1>
+         <Counter />
+       </div>
+     );
+   }
+   ```
+
+## Final Notes
+
+Remember to:
+- Keep your code clean and readable
+- Add appropriate comments
+- Use consistent formatting
+- Follow language-specific best practices
+
+That's all for the code examples! Happy coding! 🚀

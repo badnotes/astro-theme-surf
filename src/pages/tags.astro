@@ -1,0 +1,73 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PostCard from '../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+const posts = await getCollection('posts', ({ data }) => {
+  return import.meta.env.PROD ? !data.draft : true;
+});
+
+// 获取所有标签
+const tags = [...new Set(posts.flatMap(post => post.data.tags || []))].sort();
+
+// 按标签分组文章
+const postsByTag = tags.reduce<Record<string, CollectionEntry<'posts'>[]>>((acc, tag) => {
+  acc[tag] = posts.filter(post => 
+    post.data.tags && post.data.tags.includes(tag)
+  );
+  return acc;
+}, {});
+
+---
+
+<Layout title="Tags">
+  <div class="max-w-6xl mx-auto">
+    <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-8">Tags</h1>
+    
+    {/* 标签云 */}
+    <div class="flex flex-wrap gap-2 mb-12">
+      {tags.map(tag => (
+        <a
+          href={`#${tag}`}
+          class="text-sm px-3 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 rounded-full hover:bg-blue-100 dark:hover:bg-blue-800/30 transition-colors"
+        >
+          #{tag}
+          <span class="text-gray-500 dark:text-gray-400 ml-1">
+            ({postsByTag[tag].length})
+          </span>
+        </a>
+      ))}
+    </div>
+    
+    {/* 按标签分组的文章列表 */}
+    <div class="space-y-12">
+      {tags.map(tag => {
+        const tagPosts = postsByTag[tag];
+        
+        return (
+          <div id={tag} class="scroll-mt-16">
+            <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-6">
+              #{tag}
+              <span class="text-lg font-normal text-gray-500 dark:text-gray-400 ml-2">
+                ({tagPosts.length} posts)
+              </span>
+            </h2>
+            <div class="grid grid-cols-1 gap-4">
+              {tagPosts.map(post => (
+                <PostCard
+                  url={`/${post.slug}`}
+                  title={post.data.title}
+                  date={post.data.date}
+                  description={post.data.description}
+                  categories={post.data.categories}
+                  tags={post.data.tags}
+                />
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+</Layout>

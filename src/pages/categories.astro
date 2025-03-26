@@ -1,0 +1,56 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PostCard from '../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+const posts = await getCollection('posts', ({ data }) => {
+  return import.meta.env.PROD ? !data.draft : true;
+});
+
+// 获取所有分类
+const categories = [...new Set(posts.flatMap(post => post.data.categories || []))].sort();
+
+// 按分类分组文章
+const postsByCategory = categories.reduce<Record<string, CollectionEntry<'posts'>[]>>((acc, category) => {
+  acc[category] = posts.filter(post => 
+    post.data.categories && post.data.categories.includes(category)
+  );
+  return acc;
+}, {});
+---
+
+<Layout title="Categories">
+  <div class="max-w-6xl mx-auto">
+    <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-8">Categories</h1>
+    
+    <div class="space-y-12">
+      {categories.map(category => {
+        const categoryPosts = postsByCategory[category];
+        
+        return (
+          <div id={category} class="scroll-mt-16">
+            <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-6">
+              {category}
+              <span class="text-lg font-normal text-gray-500 dark:text-gray-400 ml-2">
+                ({categoryPosts.length} posts)
+              </span>
+            </h2>
+            <div class="grid grid-cols-1 gap-4">
+              {categoryPosts.map(post => (
+                <PostCard
+                  url={`/${post.slug}`}
+                  title={post.data.title}
+                  date={post.data.date}
+                  description={post.data.description}
+                  categories={post.data.categories}
+                  tags={post.data.tags}
+                />
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+</Layout>
